@@ -1,89 +1,174 @@
+let number1Boxes = [];
+let number1 = 0;
+let number2Boxes = [];
+let number2 = 0;
+let appMode = "display"; // display, moveOnes, calcOnes, CalcTens
+
 function setup() {
     createCanvas(innerWidth -20, innerHeight -40);
 }
-  
-let number1 = 0;
-let number2 = 0;
-let numOfBoxes1 = 0;
-let numOfBoxes2 = 0;
-let onethBlockOffset = 0;
-let displayWidth = 30;
-let isMove = false;
+
+function drawBoxes(){
+    number1Boxes = [];
+    number2Boxes = [];
+    appMode = "display";
+    number1 = document.getElementById("firstNumber").value;
+    // Create object
+    for (let i = 0; i < Math.ceil10(number1,1); i++) {
+        number1Boxes.push(new Rectangle(i, number1));
+    }
+    number2 = document.getElementById("secondNumber").value;
+    // Create object
+    for (let i = 0; i < Math.ceil10(number2,1); i++) {
+        number2Boxes.push(new SecondRectangle(i, number2));
+    }
+}
 
 function moveBoxes(){
-    isMove = true;
+    appMode = "moveOnes";
+    // 移動対象のマスにゴールを設定する
+    for (let i = 0; i < number1Boxes.length; i++) {
+        if(!number1Boxes[i].isRoundNum){
+            number1Boxes[i].goalX = number1Boxes[i].goalX;
+            number1Boxes[i].goalY = 30;
+        }
+    }
+    for (let i = 0; i < number2Boxes.length; i++) {
+        if(!number2Boxes[i].isRoundNum){
+            number2Boxes[i].goalX = number2Boxes[i].goalX;
+            number2Boxes[i].goalY = 70;
+        }
+    }
 }
-function drawBoxes(){
-    onethBlockOffset = 0;
-    number1 = document.getElementById("firstNumber").value;
-    numOfBoxes1 = Math.ceil10(number1, 1)
-    number2 = document.getElementById("secondNumber").value;
-    numOfBoxes2 = Math.ceil10(number2, 1)
+function calcOnes(){
+    let num1Frac = number1%10;
+    let num2Frac = number2%10;
+    //もし両方5以上なら、1~5までを紫にして、ゴールに移動する
+        //残りの枠は並べ直す
+    //もし足して10以上なら、上の空白を色塗りして、ゴールに移動する
+    //もし足して10未満なら、色を色塗りする
+        //残りの枠を消す
 }
-
-
 function draw() {
-    background(220);
-    if(isMove){
-        onethBlockOffset += 10;
-        if(onethBlockOffset >= 600){
-            isMove = false;
-        }
-    }    
-    stroke('purple'); // Change the color
-    strokeWeight(5); // Make the points 10 pixels in size
-
-    let displayHeight = 20;
-    let radius = 10;
-    for(let i = 0; i < numOfBoxes1; i++){
-        fill(256);
-        radius = 10;
-        if(1 < i && i % 10 == 0){
-            displayHeight += 50;
-            displayWidth = 30;
-        }
-        if ( i % 5 == 4) {
-            //no round edge
-            radius = 0;
-        }
-        if (i < number1){
-            fill('purple');
-        }
-        // ToDo: 繰り上がりのある1の位の計算をアニメーションで
-        // todo: 50の時に10個まとめて動いてしまう
-        if(numOfBoxes1 - i <= 10 && number1 % 10 != 0){
-            square(onethBlockOffset + displayWidth + ((i % 10) * 50), displayHeight, 40, radius);
-        }else{
-            square(displayWidth + ((i % 10) * 50), displayHeight, 40, radius);
-        }
+    background(50, 89, 100);
+    for (let i = 0; i < number1Boxes.length; i++) {
+        number1Boxes[i].move();
+        number1Boxes[i].display();
     }
+    for (let i = 0; i < number2Boxes.length; i++) {
+        number2Boxes[i].move();
+        number2Boxes[i].display();
+    }
+
+}
     
-    displayHeight += 50;
 
-    stroke('blue'); // Change the color
-    strokeWeight(5); // Make the points 10 pixels in size
-
-    for(let i = 0; i < numOfBoxes2; i++){
-        fill(256);
-        radius = 10;
-        if(1 < i && i % 10 == 0){
-            displayHeight += 50;
-            displayWidth = 30;
-        }
-        if ( i % 5 == 4) {
-            //no round edge
-            radius = 0;
-        }
-        if (i < number2){
-            fill('blue');
-        }
-        if(numOfBoxes2 - i <= 10 && number2 % 10 != 0){
-            square(onethBlockOffset + displayWidth + ((i % 10) * 50), displayHeight, 40, radius);
+class Rectangle {
+    constructor(seq, number1) {
+        this.seq = seq;
+        this.isEmpty = seq >= number1;
+        this.isRoundNum = (Math.ceil10(seq + 1,1) <= number1);
+        if(this.isRoundNum){
+            this.x = 30 + ((seq)%10)*34;
+            this.y = 110 + Math.floor((seq)/10)*40;
         }else{
-            square(displayWidth + ((i % 10) * 50), displayHeight, 40, radius);
+            this.x = 400 + ((seq)%10)*34;
+            this.y = 110;
+        }
+        this.goalX = this.x;
+        this.goalY = this.y;
+        this.color = "red";
+    }
+
+    move() {
+        if (this.goalX != this.x){
+            if(this.goalX > this.x){
+                this.x += 2;
+            }else{
+                this.x -= 2;
+            }
+        }
+        if(this.goalY != this.y){
+            if(this.goalY >this.y){
+                this.y += 2;
+            }else{
+                this.y -= 2;
+            }
+        }
+    }
+  
+    display() {
+        if(!this.isEmpty){
+            fill(this.color);    
+        }else{
+            fill("white");
+        }
+        if((this.seq + 1)%5 == 0){
+            square(this.x, this.y, 32,0);
+        }else{
+            square(this.x, this.y, 32,8);
+        }
+        fill("black");
+        if(appMode === "display"){
+            text(this.seq + 1, this.x + 15, this.y +25);
+        }else if(appMode === "moveOnes"){
+            text((this.seq%10)+1, this.x + 15, this.y +25);
+        } 
+    }
+  }
+
+class SecondRectangle {
+    constructor(seq, number2) {
+        this.seq = seq;
+        this.isEmpty = seq >= number2;
+        this.isRoundNum = (Math.ceil10(seq + 1,1) <= number2);
+        if(this.isRoundNum){
+            this.x = 30 + ((seq)%10)*34;
+            this.y = 410 + Math.floor((seq)/10)*40;
+        }else{
+            this.x = 400 + ((seq)%10)*34;
+            this.y = 410;
+        }
+        this.goalX = this.x;
+        this.goalY = this.y;
+        this.color = "blue";
+    }
+
+    move() {
+        if (this.goalX != this.x){
+            if(this.goalX > this.x){
+                this.x += 2;
+            }else{
+                this.x -= 2;
+            }
+        }
+        if(this.goalY != this.y){
+            if(this.goalY >this.y){
+                this.y += 2;
+            }else{
+                this.y -= 2;
+            }
         }
     }
 
+    display() {
+        if(!this.isEmpty){
+            fill(this.color);    
+        }else{
+            fill("white");
+        }
+        if((this.seq + 1)%5 == 0){
+            square(this.x, this.y, 32,0);
+        }else{
+            square(this.x, this.y, 32,8);
+        }
+        fill("black");
+        if(appMode === "display"){
+            text(this.seq + 1, this.x + 15, this.y +25);
+        }else if(appMode === "moveOnes"){
+            text((this.seq%10)+1, this.x + 15, this.y +25);
+        }
+    }
 }
 
 //https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Math/ceil
