@@ -49,7 +49,9 @@ function draw() {
         if (i < number1){
             fill('purple');
         }
-        if(numOfBoxes1 - i <= 10){
+        // ToDo: 繰り上がりのある1の位の計算をアニメーションで
+        // todo: 50の時に10個まとめて動いてしまう
+        if(numOfBoxes1 - i <= 10 && number1 % 10 != 0){
             square(onethBlockOffset + displayWidth + ((i % 10) * 50), displayHeight, 40, radius);
         }else{
             square(displayWidth + ((i % 10) * 50), displayHeight, 40, radius);
@@ -75,7 +77,7 @@ function draw() {
         if (i < number2){
             fill('blue');
         }
-        if(numOfBoxes2 - i <= 10){
+        if(numOfBoxes2 - i <= 10 && number2 % 10 != 0){
             square(onethBlockOffset + displayWidth + ((i % 10) * 50), displayHeight, 40, radius);
         }else{
             square(displayWidth + ((i % 10) * 50), displayHeight, 40, radius);
