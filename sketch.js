@@ -6,18 +6,30 @@ let number1 = 0;
 let number2 = 0;
 let numOfBoxes1 = 0;
 let numOfBoxes2 = 0;
+let onethBlockOffset = 0;
+let displayWidth = 30;
+let isMove = false;
 
+function moveBoxes(){
+    isMove = true;
+}
 function drawBoxes(){
-    
+    onethBlockOffset = 0;
     number1 = document.getElementById("firstNumber").value;
     numOfBoxes1 = Math.ceil10(number1, 1)
     number2 = document.getElementById("secondNumber").value;
     numOfBoxes2 = Math.ceil10(number2, 1)
 }
 
+
 function draw() {
     background(220);
-    
+    if(isMove){
+        onethBlockOffset += 10;
+        if(onethBlockOffset >= 600){
+            isMove = false;
+        }
+    }    
     stroke('purple'); // Change the color
     strokeWeight(5); // Make the points 10 pixels in size
 
@@ -37,7 +49,11 @@ function draw() {
         if (i < number1){
             fill('purple');
         }
-        square(30 + ((i % 10) * 50), displayHeight, 40, radius);
+        if(numOfBoxes1 - i <= 10){
+            square(onethBlockOffset + displayWidth + ((i % 10) * 50), displayHeight, 40, radius);
+        }else{
+            square(displayWidth + ((i % 10) * 50), displayHeight, 40, radius);
+        }
     }
     
     displayHeight += 50;
@@ -59,7 +75,11 @@ function draw() {
         if (i < number2){
             fill('blue');
         }
-        square(30 + ((i % 10) * 50), displayHeight, 40, radius);
+        if(numOfBoxes2 - i <= 10){
+            square(onethBlockOffset + displayWidth + ((i % 10) * 50), displayHeight, 40, radius);
+        }else{
+            square(displayWidth + ((i % 10) * 50), displayHeight, 40, radius);
+        }
     }
 
 }
