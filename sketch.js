@@ -43,11 +43,41 @@ function moveBoxes(){
 function calcOnes(){
     let num1Frac = number1%10;
     let num2Frac = number2%10;
+    let timeout = 1;
+    console.log(num1Frac + num2Frac);
+    //10以下なら上に色を移動する
+    if (num1Frac + num2Frac <= 10) { 
+        for(let i = 0; i < num2Frac; i++){
+            setTimeout(function(){
+                number1Boxes[Number(number1) + i].isEmpty = false;
+                number1Boxes[Number(number1) + i].color = "blue";
+    
+                number2Boxes[Number(number2) - i -1].isEmpty = true;
+    
+            }, timeout*1000);
+            timeout++;
+        }
+        return;
+    }
+    for(let i = 0; i < 10 - num1Frac; i++){
+        setTimeout(function(){
+            number1Boxes[Number(number1) + i].isEmpty = false;
+            number1Boxes[Number(number1) + i].color = "blue";
+            number2Boxes[Number(number2) - i -1].isEmpty = true;
+            }, timeout*1000);
+        timeout++;
+    }
+
+    for(let i = 0; i < 10; i++){
+        let box = number1Boxes[number1Boxes.length-i-1];
+        setTimeout(function(){
+            box.goalX = box.x - 370;
+            }, timeout*1000);
+    }
     //もし両方5以上なら、1~5までを紫にして、ゴールに移動する
         //残りの枠は並べ直す
     //もし足して10以上なら、上の空白を色塗りして、ゴールに移動する
-    //もし足して10未満なら、色を色塗りする
-        //残りの枠を消す
+
 }
 function draw() {
     background(50, 89, 100);
@@ -99,7 +129,7 @@ class Rectangle {
   
     display() {
         if(!this.isEmpty){
-            fill(this.color);    
+            fill(this.color);  
         }else{
             fill("white");
         }
