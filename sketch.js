@@ -45,8 +45,8 @@ function calcOnes(){
     let num2Frac = number2%10;
     let timeout = 1;
     console.log(num1Frac + num2Frac);
-    //10以下なら上に色を移動する
-    if (num1Frac + num2Frac <= 10) { 
+
+    if (num1Frac + num2Frac < 10) { 
         for(let i = 0; i < num2Frac; i++){
             setTimeout(function(){
                 number1Boxes[Number(number1) + i].isEmpty = false;
@@ -57,6 +57,12 @@ function calcOnes(){
             }, timeout*1000);
             timeout++;
         }
+        if(num1Frac + num2Frac <= 10){
+            setTimeout(function(){
+                number2Boxes.splice(number2Boxes.length -10);
+                }, timeout*1000);    
+        }
+        
         return;
     }
     for(let i = 0; i < 10 - num1Frac; i++){
@@ -66,6 +72,11 @@ function calcOnes(){
             number2Boxes[Number(number2) - i -1].isEmpty = true;
             }, timeout*1000);
         timeout++;
+    }
+    if(num1Frac + num2Frac <= 10){
+        setTimeout(function(){
+            number2Boxes.splice(number2Boxes.length -10);
+            }, timeout*1000);    
     }
 
     for(let i = 0; i < 10; i++){
@@ -139,11 +150,12 @@ class Rectangle {
             square(this.x, this.y, 32,8);
         }
         fill("black");
+        textSize(18);
         if(appMode === "display"){
-            text(this.seq + 1, this.x + 15, this.y +25);
+            text(this.seq + 1, this.x + 4, this.y +20);
         }else if(appMode === "moveOnes"){
-            text((this.seq%10)+1, this.x + 15, this.y +25);
-        } 
+            text((this.seq%10)+1, this.x + 4, this.y +20);
+        }
     }
   }
 
@@ -193,10 +205,11 @@ class SecondRectangle {
             square(this.x, this.y, 32,8);
         }
         fill("black");
+        textSize(18);
         if(appMode === "display"){
-            text(this.seq + 1, this.x + 15, this.y +25);
+            text(this.seq + 1, this.x + 4, this.y +20);
         }else if(appMode === "moveOnes"){
-            text((this.seq%10)+1, this.x + 15, this.y +25);
+            text((this.seq%10)+1, this.x + 4, this.y +20);
         }
     }
 }
